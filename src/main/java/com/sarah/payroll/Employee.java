@@ -1,3 +1,14 @@
+package com.sarah.payroll;
+
+import java.util.Objects;
+
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+
+
 @Entity
 public class Employee {
 
