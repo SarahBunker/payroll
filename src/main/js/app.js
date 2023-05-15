@@ -48,9 +48,8 @@ function App() {
         <div className="modal">
           <div className="modal-content">
             <button className="modal-close" onClick={toggleModal}>
-              Close
+              <span className="close-icon">X</span>
             </button>
-            <h2>Create new employee</h2>
             <CreateDialog onCreate={onCreate} attributes={['firstName', 'lastName', 'description']} />
           </div>
         </div>

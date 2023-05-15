@@ -37,14 +37,8 @@ function CreateDialog({ attributes, onCreate }) {
 
   return (
     <div>
-      <a href="#createEmployee">Create</a>
-
       <div id="createEmployee" className="modalDialog">
         <div>
-          <a href="#" title="Close" className="close">
-            X
-          </a>
-
           <h2>Create new employee</h2>
 
           <form>
