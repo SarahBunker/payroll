@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+import EmployeeList from './components/EmployeeList';
+
 function App() {
   const [employees, setEmployees] = useState([]);
 
@@ -31,33 +33,6 @@ function App() {
 
   return (
     <EmployeeList employees={employees} />
-  );
-}
-
-function EmployeeList({ employees }) {
-  return (
-    <table>
-      <tbody>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Description</th>
-        </tr>
-        {employees.map(employee => (
-          <Employee key={employee._links.self.href} employee={employee} />
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-function Employee({ employee }) {
-  return (
-    <tr>
-      <td>{employee.firstName}</td>
-      <td>{employee.lastName}</td>
-      <td>{employee.description}</td>
-    </tr>
   );
 }
 
