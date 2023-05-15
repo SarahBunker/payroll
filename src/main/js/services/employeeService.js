@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const root = "/api";
-const pageSize = 2;
+const pageSize = 10;
 
 const createEmployee = async (employeeData) => {
   try {

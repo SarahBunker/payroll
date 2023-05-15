@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-// import axios from 'axios';
 
 import employeeService from './services/employeeService';
-
 
 import EmployeeList from './components/EmployeeList';
 import CreateDialog from './components/CreateDialog'; //FIXME
 
 function App() {
   const [employees, setEmployees] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -29,18 +29,35 @@ function App() {
       await employeeService.createEmployee(employeeData);
       const newEmployeeList = await employeeService.getEmployees();
       setEmployees(newEmployeeList);
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Error creating employee:', error);
     }
   }
 
+  const toggleModal = () => {
+    setIsModalOpen(prevState => !prevState);
+  };
+  
+
   return (
     <div>
       <EmployeeList employees={employees} />
-      <CreateDialog onCreate={onCreate} attributes={['firstName', 'lastName', 'description']}/>
+      <button onClick={toggleModal}>Create</button>
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="modal-close" onClick={toggleModal}>
+              Close
+            </button>
+            <h2>Create new employee</h2>
+            <CreateDialog onCreate={onCreate} attributes={['firstName', 'lastName', 'description']} />
+          </div>
+        </div>
+      )}
     </div>
-    
   );
+  
 }
 
 ReactDOM.render(<App />, document.getElementById('react'));
