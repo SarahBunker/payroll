@@ -1,58 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+function App() {
+  const [employees, setEmployees] = useState([]);
 
-class App extends React.Component {
+  useEffect(() => {
+    const pageSize = 2; // Define your desired page size
+    loadFromServer(pageSize);
+  }, []);
 
-	constructor(props) {
-		super(props);
-		this.state = {employees: []};
-	}
+  async function loadFromServer(pageSize) {
+    try {
+      const root = '/api';
+      const employeesRel = 'employees';
 
-	componentDidMount() {
-    axios.get('/api/employees').then(response => {
-      this.setState({ employees: response.data._embedded.employees });
-    });
+      const response = await axios.get(`${root}/${employeesRel}`, { params: { size: pageSize } });
+      const employeeCollection = response.data;
+      const links = employeeCollection._links;
+
+      const schemaResponse = await axios.get(links.profile.href, { headers: { 'Accept': 'application/schema+json' } });
+      const schema = schemaResponse.data;
+
+      setEmployees(employeeCollection._embedded.employees);
+      // Other state updates (attributes, pageSize, links) can be done here as well
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    }
   }
 
-	render() {
-		return (
-			<EmployeeList employees={this.state.employees}/>
-		)
-	}
+  return (
+    <EmployeeList employees={employees} />
+  );
 }
 
-class EmployeeList extends React.Component{
-	render() {
-		const employees = this.props.employees.map(employee =>
-			<Employee key={employee._links.self.href} employee={employee}/>
-		);
-		return (
-			<table>
-				<tbody>
-					<tr>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Description</th>
-					</tr>
-					{employees}
-				</tbody>
-			</table>
-		)
-	}
+function EmployeeList({ employees }) {
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Description</th>
+        </tr>
+        {employees.map(employee => (
+          <Employee key={employee._links.self.href} employee={employee} />
+        ))}
+      </tbody>
+    </table>
+  );
 }
 
-class Employee extends React.Component{
-	render() {
-		return (
-			<tr>
-				<td>{this.props.employee.firstName}</td>
-				<td>{this.props.employee.lastName}</td>
-				<td>{this.props.employee.description}</td>
-			</tr>
-		)
-	}
+function Employee({ employee }) {
+  return (
+    <tr>
+      <td>{employee.firstName}</td>
+      <td>{employee.lastName}</td>
+      <td>{employee.description}</td>
+    </tr>
+  );
 }
 
 ReactDOM.render(<App />, document.getElementById('react'));
