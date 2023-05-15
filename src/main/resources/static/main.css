@@ -1,3 +1,24 @@
+.container {
+  margin: 20px;
+}
+
+.employee-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.employee-table th,
+.employee-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.employee-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -30,4 +51,8 @@
 .close-icon {
   font-weight: bold;
   font-size: 16px;
+}
+
+.close-icon:hover {
+  color: #777;
 }

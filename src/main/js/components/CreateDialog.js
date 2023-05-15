@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-function CreateDialog({ attributes, onCreate }) {
-  const [employeeData, setEmployeeData] = useState({}); // State for holding form data
+function CreateDialog({ attributes, onCreate, onClose }) {
+  const [employeeData, setEmployeeData] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,9 +17,6 @@ function CreateDialog({ attributes, onCreate }) {
 
     // Clear out the dialog's inputs
     setEmployeeData({});
-
-    // Navigate away from the dialog to hide it.
-    window.location = '#';
   };
 
   const inputs = attributes.map((attribute) => (
@@ -36,17 +33,15 @@ function CreateDialog({ attributes, onCreate }) {
   ));
 
   return (
-    <div>
-      <div id="createEmployee" className="modalDialog">
-        <div>
-          <h2>Create new employee</h2>
-
-          <form>
-            {inputs}
-            <button onClick={handleSubmit}>Create</button>
-          </form>
-        </div>
-      </div>
+    <div id="createEmployee" className="modal-dialog">
+      <button className="modal-close" onClick={onClose}>
+        <span className="close-icon">X</span>
+      </button>
+      <h2>Create new employee</h2>
+      <form>
+        {inputs}
+        <button onClick={handleSubmit}>Create</button>
+      </form>
     </div>
   );
 }

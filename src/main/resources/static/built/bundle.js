@@ -34897,17 +34897,18 @@ function App() {
           case 5:
             newEmployeeList = _context2.sent;
             setEmployees(newEmployeeList);
-            _context2.next = 12;
+            setIsModalOpen(false);
+            _context2.next = 13;
             break;
-          case 9:
-            _context2.prev = 9;
+          case 10:
+            _context2.prev = 10;
             _context2.t0 = _context2["catch"](0);
             console.error('Error creating employee:', _context2.t0);
-          case 12:
+          case 13:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 9]]);
+      }, _callee2, null, [[0, 10]]);
     }));
     return _onCreate.apply(this, arguments);
   }
@@ -34918,19 +34919,17 @@ function App() {
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_EmployeeList__WEBPACK_IMPORTED_MODULE_3__["default"], {
     employees: employees
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    onClick: toggleModal
-  }, "Create"), isModalOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }), isModalOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "modal"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "modal-content"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "modal-close",
-    onClick: toggleModal
-  }, "Close"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Create new employee"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_CreateDialog__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_CreateDialog__WEBPACK_IMPORTED_MODULE_4__["default"], {
     onCreate: onCreate,
+    onClose: toggleModal,
     attributes: ['firstName', 'lastName', 'description']
-  }))));
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: toggleModal
+  }, "Create"));
 }
 react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(App, null), document.getElementById('react'));
 
@@ -34962,12 +34961,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function CreateDialog(_ref) {
   var attributes = _ref.attributes,
-    onCreate = _ref.onCreate;
+    onCreate = _ref.onCreate,
+    onClose = _ref.onClose;
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({}),
     _useState2 = _slicedToArray(_useState, 2),
     employeeData = _useState2[0],
-    setEmployeeData = _useState2[1]; // State for holding form data
-
+    setEmployeeData = _useState2[1];
   var handleChange = function handleChange(e) {
     var _e$target = e.target,
       name = _e$target.name,
@@ -34982,9 +34981,6 @@ function CreateDialog(_ref) {
 
     // Clear out the dialog's inputs
     setEmployeeData({});
-
-    // Navigate away from the dialog to hide it.
-    window.location = '#';
   };
   var inputs = attributes.map(function (attribute) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
@@ -34998,18 +34994,17 @@ function CreateDialog(_ref) {
       className: "field"
     }));
   });
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    href: "#createEmployee"
-  }, "Create"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "createEmployee",
-    className: "modalDialog"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    href: "#",
-    title: "Close",
-    className: "close"
-  }, "X"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Create new employee"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, inputs, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "modal-dialog"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "modal-close",
+    onClick: onClose
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "close-icon"
+  }, "X")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Create new employee"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, inputs, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: handleSubmit
-  }, "Create")))));
+  }, "Create")));
 }
 /* harmony default export */ __webpack_exports__["default"] = (CreateDialog);
 
@@ -35051,7 +35046,9 @@ __webpack_require__.r(__webpack_exports__);
 
 function EmployeeList(_ref) {
   var employees = _ref.employees;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "First Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Last Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Description")), employees.map(function (employee) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+    className: "employee-list"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "First Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Last Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Description")), employees.map(function (employee) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Employee__WEBPACK_IMPORTED_MODULE_1__["default"], {
       key: employee._links.self.href,
       employee: employee

@@ -41,22 +41,18 @@ function App() {
   
 
   return (
-    <div>
+    <div className='container'>
       <EmployeeList employees={employees} />
-      <button onClick={toggleModal}>Create</button>
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <button className="modal-close" onClick={toggleModal}>
-              <span className="close-icon">X</span>
-            </button>
-            <CreateDialog onCreate={onCreate} attributes={['firstName', 'lastName', 'description']} />
+            <CreateDialog onCreate={onCreate} onClose={toggleModal} attributes={['firstName', 'lastName', 'description']} />
           </div>
         </div>
       )}
+      <button onClick={toggleModal}>Create</button>
     </div>
   );
-  
 }
 
 ReactDOM.render(<App />, document.getElementById('react'));
