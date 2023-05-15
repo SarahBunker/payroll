@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 import EmployeeList from './components/EmployeeList';
+import CreateDialog from './components/CreateDialog'; //FIXME
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -31,8 +32,16 @@ function App() {
     }
   }
 
+  function handleEmployeeCreate() { // FIXME
+    window.alert("Creating employee");
+  }
+
   return (
-    <EmployeeList employees={employees} />
+    <div>
+      <EmployeeList employees={employees} />
+      <CreateDialog onCreate={handleEmployeeCreate} attributes={['firstName', 'lastName', 'description']}/>
+    </div>
+    
   );
 }
 
