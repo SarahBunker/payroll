@@ -12,11 +12,9 @@ function App() {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    console.log("type of createEmployee", typeof createEmployee);
     const fetchEmployees = async () => {
       try {
         const newEmployeeList = await employeeService.getEmployees();
-        console.log(newEmployeeList);
         setEmployees(newEmployeeList);
       } catch (error) {
         console.error('Error loading employees:', error);
@@ -30,7 +28,6 @@ function App() {
     try {
       await employeeService.createEmployee(employeeData);
       const newEmployeeList = await employeeService.getEmployees();
-      console.log(newEmployeeList);
       setEmployees(newEmployeeList);
     } catch (error) {
       console.error('Error creating employee:', error);
