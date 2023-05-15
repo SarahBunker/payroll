@@ -1,33 +1,37 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 
 function CreateDialog({ attributes, onCreate }) {
-  const formRefs = attributes.reduce((acc, attribute) => {
-    acc[attribute] = useRef(null);
-    return acc;
-  }, {});
+  const [employeeData, setEmployeeData] = useState({}); // State for holding form data
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEmployeeData((prevData) => ({
+      ...prevData,
+      [name]: value.trim()
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newEmployee = {};
-
-    attributes.forEach(attribute => {
-      newEmployee[attribute] = formRefs[attribute].current.value.trim();
-    });
-
-    onCreate(newEmployee);
+    onCreate(employeeData);
 
     // Clear out the dialog's inputs
-    attributes.forEach(attribute => {
-      formRefs[attribute].current.value = '';
-    });
+    setEmployeeData({});
 
     // Navigate away from the dialog to hide it.
     window.location = '#';
   };
 
-  const inputs = attributes.map(attribute => (
+  const inputs = attributes.map((attribute) => (
     <p key={attribute}>
-      <input type="text" placeholder={attribute} ref={formRefs[attribute]} className="field" />
+      <input
+        type="text"
+        placeholder={attribute}
+        name={attribute}
+        value={employeeData[attribute] || ''}
+        onChange={handleChange}
+        className="field"
+      />
     </p>
   ));
 
@@ -37,7 +41,9 @@ function CreateDialog({ attributes, onCreate }) {
 
       <div id="createEmployee" className="modalDialog">
         <div>
-          <a href="#" title="Close" className="close">X</a>
+          <a href="#" title="Close" className="close">
+            X
+          </a>
 
           <h2>Create new employee</h2>
 

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import axios from 'axios';
+// import axios from 'axios';
+
+import employeeService from './services/employeeService';
+
 
 import EmployeeList from './components/EmployeeList';
 import CreateDialog from './components/CreateDialog'; //FIXME
@@ -9,37 +12,35 @@ function App() {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    const pageSize = 2; // Define your desired page size
-    loadFromServer(pageSize);
+    console.log("type of createEmployee", typeof createEmployee);
+    const fetchEmployees = async () => {
+      try {
+        const newEmployeeList = await employeeService.getEmployees();
+        console.log(newEmployeeList);
+        setEmployees(newEmployeeList);
+      } catch (error) {
+        console.error('Error loading employees:', error);
+      }
+    };
+
+    fetchEmployees();
   }, []);
 
-  async function loadFromServer(pageSize) {
+  async function onCreate(employeeData) {
     try {
-      const root = '/api';
-      const employeesRel = 'employees';
-
-      const response = await axios.get(`${root}/${employeesRel}`, { params: { size: pageSize } });
-      const employeeCollection = response.data;
-      const links = employeeCollection._links;
-
-      const schemaResponse = await axios.get(links.profile.href, { headers: { 'Accept': 'application/schema+json' } });
-      const schema = schemaResponse.data;
-
-      setEmployees(employeeCollection._embedded.employees);
-      // Other state updates (attributes, pageSize, links) can be done here as well
+      await employeeService.createEmployee(employeeData);
+      const newEmployeeList = await employeeService.getEmployees();
+      console.log(newEmployeeList);
+      setEmployees(newEmployeeList);
     } catch (error) {
-      console.error('Error loading employees:', error);
+      console.error('Error creating employee:', error);
     }
-  }
-
-  function handleEmployeeCreate() { // FIXME
-    window.alert("Creating employee");
   }
 
   return (
     <div>
       <EmployeeList employees={employees} />
-      <CreateDialog onCreate={handleEmployeeCreate} attributes={['firstName', 'lastName', 'description']}/>
+      <CreateDialog onCreate={onCreate} attributes={['firstName', 'lastName', 'description']}/>
     </div>
     
   );
