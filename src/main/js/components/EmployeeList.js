@@ -2,7 +2,7 @@ import React from 'react';
 import Employee from './Employee';
 import CreateDialog from './CreateDialog';
 
-function EmployeeList({ employees, onCreate, isModalOpen, toggleModal}) {
+function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal}) {
   return (
     <div>
       <table className="employee-table">
@@ -17,13 +17,13 @@ function EmployeeList({ employees, onCreate, isModalOpen, toggleModal}) {
           ))}
         </tbody>
       </table>
-      <button onClick={toggleModal}>Create</button>
+      <button onClick={openModal}>Create</button>
       {isModalOpen && (
         <div className='modal'>
           <div className='modal-content'>
             <CreateDialog
               onCreate={onCreate}
-              onClose={toggleModal}
+              onClose={closeModal}
               attributes={['firstName', 'lastName', 'description']}
             />
           </div>
