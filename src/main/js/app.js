@@ -5,19 +5,17 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import employeeService from './services/employeeService';
 import EmployeeList from './components/EmployeeList';
 
-const pageSize = 10;
-
-
 function App() {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pages, setPages] = useState({});
   const [links, setLinks] = useState({});
 
-  const fetchState = async () => {
+  const fetchState = async (page, size) => {
     try {
-      const hal = await employeeService.loadFromServer(0, pageSize);
-      setLinks(hal._links);
+      const hal = await employeeService.loadFromServer(page, size);
+      let links = modifyBackendUrls(hal._links)
+      setLinks(links);
       setPages(hal.pages);
       setEmployees(hal._embedded.employees);
     } catch (error) {
@@ -25,10 +23,27 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchState();
-  }, []);
+  function modifyBackendUrls(links) {
+    const modifiedLinks = {};
+  
+    for (const key in links) {
+      if (links.hasOwnProperty(key)) {
+        const url = links[key].href;
+        const modifiedUrl = url.replace('/api/', '/');
+        modifiedLinks[key] = {
+          href: modifiedUrl
+        };
+      }
+    }
+  
+    return modifiedLinks;
+  }
 
+  useEffect(() => {
+    let [page, size] = getParams();
+    fetchState(page, size);
+  }, []);
+  
   async function onCreate(employeeData) {
     try {
       await employeeService.createEmployee(employeeData);
@@ -51,6 +66,15 @@ function App() {
   const handleNavClick = (e) => {
     e.preventDefault();
     console.log("clicked Nav");
+  }
+
+  const getParams = () => {
+    const queryParameters = new URLSearchParams(location.search);
+    let queryPage = queryParameters.get("page");
+    let querySize = queryParameters.get("size");
+    if (!queryPage) queryPage = 0;
+    if (!querySize) querySize = 10;
+    return [queryPage, querySize];
   }
 
   return (

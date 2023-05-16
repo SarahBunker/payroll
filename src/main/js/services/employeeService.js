@@ -27,6 +27,7 @@ const loadFromServer = async (page, size) => {
   try {
     const response = await axios.get(`${root}/employees?page=${page}&size=${size}`);
     let hal = response.data;
+    console.log({hal});
     return hal
   } catch (error) {
     throw error;
