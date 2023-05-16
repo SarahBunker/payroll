@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+
 
 import employeeService from './services/employeeService';
 
 import EmployeeList from './components/EmployeeList';
-import CreateDialog from './components/CreateDialog'; //FIXME
+
+
+
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -41,17 +46,14 @@ function App() {
   
 
   return (
-    <div className='container'>
-      <EmployeeList employees={employees} />
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <CreateDialog onCreate={onCreate} onClose={toggleModal} attributes={['firstName', 'lastName', 'description']} />
-          </div>
-        </div>
-      )}
-      <button onClick={toggleModal}>Create</button>
-    </div>
+    <Router>
+      <div className='container'>
+        <Routes>
+          <Route path='/' element={<EmployeeList employees={employees} onCreate={onCreate} toggleModal={toggleModal} isModalOpen={isModalOpen}/>} />
+          {/* Add other routes here */}
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
