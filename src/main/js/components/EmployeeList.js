@@ -2,9 +2,28 @@ import React from 'react';
 import Employee from './Employee';
 import CreateDialog from './CreateDialog';
 
-function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal}) {
+function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleNavClick}) {
+
+  const navLinks = [];
+	if ("first" in links) {
+		navLinks.push(<button key="first" onClick={handleNavClick}>&lt;&lt;</button>);
+	}
+	if ("prev" in links) {
+		navLinks.push(<button key="prev" onClick={handleNavClick}>&lt;</button>);
+	}
+	if ("next" in links) {
+		navLinks.push(<button key="next" onClick={handleNavClick}>&gt;</button>);
+	}
+	if ("last" in links) {
+		navLinks.push(<button key="last" onClick={handleNavClick}>&gt;&gt;</button>);
+	}
+
   return (
     <div>
+      <div className='container'>
+        <button onClick={openModal}>Create</button>
+      </div>
+      
       <table className="employee-table">
         <tbody>
           <tr>
@@ -17,7 +36,6 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal}
           ))}
         </tbody>
       </table>
-      <button onClick={openModal}>Create</button>
       {isModalOpen && (
         <div className='modal'>
           <div className='modal-content'>
@@ -29,6 +47,7 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal}
           </div>
         </div>
       )}
+      {navLinks}
     </div>
   );
 }

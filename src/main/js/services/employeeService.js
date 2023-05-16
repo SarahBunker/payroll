@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const root = "/api";
-const pageSize = 10;
 
 const createEmployee = async (employeeData) => {
   try {
@@ -13,18 +12,31 @@ const createEmployee = async (employeeData) => {
   }
 }
 
-const getEmployees = async () => {
+const getEmployees = async (page, size) => {
   try {
-    const response = await axios.get(`${root}/employees?size=${pageSize}`);
+    const response = await axios.get(`${root}/employees?page=${page}&size=${size}`);
+    let hal = response.data;
+    console.log({hal})
     return response.data._embedded.employees;
   } catch (error) {
     throw error;
   }
 }
 
+const loadFromServer = async (page, size) => {
+  try {
+    const response = await axios.get(`${root}/employees?page=${page}&size=${size}`);
+    let hal = response.data;
+    return hal
+  } catch (error) {
+    throw error;
+  }
+} 
+
 const employeeService = {
   createEmployee,
-  getEmployees
+  getEmployees,
+  loadFromServer
 }
 
 export default employeeService;
