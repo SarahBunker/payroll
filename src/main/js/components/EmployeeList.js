@@ -1,22 +1,44 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Employee from './Employee';
 import CreateDialog from './CreateDialog';
+import NavBar from './NavBar';
 
-function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleNavClick}) {
+function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links}) {
 
   const navLinks = [];
-	if ("first" in links) {
-		navLinks.push(<button key="first" onClick={handleNavClick}>&lt;&lt;</button>);
-	}
-	if ("prev" in links) {
-		navLinks.push(<button key="prev" onClick={handleNavClick}>&lt;</button>);
-	}
-	if ("next" in links) {
-		navLinks.push(<button key="next" onClick={handleNavClick}>&gt;</button>);
-	}
-	if ("last" in links) {
-		navLinks.push(<button key="last" onClick={handleNavClick}>&gt;&gt;</button>);
-	}
+  if ("first" in links) {
+    const linkUrl = links.first.href;
+    navLinks.push(
+      <Link key="first" to={linkUrl}>
+        &lt;&lt;
+      </Link>
+    );
+  }
+  if ("prev" in links) {
+    const linkUrl = links.prev.href;
+    navLinks.push(
+      <Link key="prev" to={linkUrl}>
+        &lt;
+      </Link>
+    );
+  }
+  if ("next" in links) {
+    const linkUrl = links.next.href;
+    navLinks.push(
+      <Link key="next" to={linkUrl}>
+        &gt;
+      </Link>
+    );
+  }
+  if ("last" in links) {
+    const linkUrl = links.last.href;
+    navLinks.push(
+      <Link key="last" to={linkUrl}>
+        &gt;&gt;
+      </Link>
+    );
+  }
 
   return (
     <div>
@@ -47,7 +69,9 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal,
           </div>
         </div>
       )}
-      {navLinks}
+      {/* {navLinks}
+       */}
+      <NavBar links={links} />
     </div>
   );
 }

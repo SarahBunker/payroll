@@ -10,6 +10,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pages, setPages] = useState({});
   const [links, setLinks] = useState({});
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(2);
 
   const fetchState = async (page, size) => {
     try {
@@ -29,7 +31,7 @@ function App() {
     for (const key in links) {
       if (links.hasOwnProperty(key)) {
         const url = links[key].href;
-        const modifiedUrl = url.replace('/api/', '/');
+        const modifiedUrl = url.replace('/api/employees', '/');
         modifiedLinks[key] = {
           href: modifiedUrl
         };
@@ -40,9 +42,9 @@ function App() {
   }
 
   useEffect(() => {
-    let [page, size] = getParams();
-    fetchState(page, size);
-  }, []);
+    const [queryPage, querySize] = getParams();
+    fetchState(queryPage, querySize);
+  }, [page, size]);
   
   async function onCreate(employeeData) {
     try {
@@ -62,11 +64,6 @@ function App() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  const handleNavClick = (e) => {
-    e.preventDefault();
-    console.log("clicked Nav");
-  }
 
   const getParams = () => {
     const queryParameters = new URLSearchParams(location.search);
@@ -88,7 +85,6 @@ function App() {
               isModalOpen={isModalOpen}
               closeModal={closeModal}
               openModal={openModal}
-              handleNavClick={handleNavClick}
               links={links}
           />} />
         </Routes>
