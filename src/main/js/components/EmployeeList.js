@@ -4,7 +4,7 @@ import Employee from './Employee';
 import CreateDialog from './CreateDialog';
 import NavBar from './NavBar';
 
-function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange}) {
+function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size}) {
 
   const navLinks = [];
   if ("first" in links) {
@@ -44,16 +44,15 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal,
     <div>
       <div className='container'>
         <button onClick={openModal}>Create</button>
-        <input
-          type="number"
-          value={employees.length}
-          onChange={(event) => {
-            const newSize = parseInt(event.target.value);
-            if (!isNaN(newSize) && newSize >= 0) {
-              handleSizeChange(newSize);
-            }
-          }}
-        />
+        <div style={{ paddingTop: '10px' }}>
+          <label htmlFor="size-select">Number of Records:</label>
+          <select id="size-select" value={size} onChange={handleSizeChange}>
+            <option value={2}>2</option>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+          </select>
+        </div>
       </div>
       
       <table className="employee-table">

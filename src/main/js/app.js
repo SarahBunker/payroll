@@ -83,11 +83,12 @@ function App() {
     }
   }
 
-  const handleSizeChange = (newSize) => {
+  const handleSizeChange = (event) => {
+    const newSize = event.target.value;
     setSize(newSize);
     setPage(0);
     fetchState(0, newSize);
-  };
+  };  
 
   return (
     <Router>
@@ -103,6 +104,7 @@ function App() {
               links={links}
               handleDelete={handleDelete}
               handleSizeChange={handleSizeChange}
+              size={size}
           />} />
         </Routes>
       </div>
