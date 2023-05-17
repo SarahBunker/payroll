@@ -32,12 +32,21 @@ const loadFromServer = async (page, size) => {
   } catch (error) {
     throw error;
   }
-} 
+}
+
+const deleteEmployee = async (selfLink) => {
+  try {
+    await axios.delete(selfLink);
+  } catch (error) {
+    throw error;
+  }
+}
 
 const employeeService = {
   createEmployee,
   getEmployees,
-  loadFromServer
+  loadFromServer,
+  deleteEmployee
 }
 
 export default employeeService;

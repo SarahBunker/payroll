@@ -69,10 +69,25 @@ function App() {
     const queryParameters = new URLSearchParams(location.search);
     let queryPage = queryParameters.get("page");
     let querySize = queryParameters.get("size");
-    if (!queryPage) queryPage = 0;
-    if (!querySize) querySize = 10;
+    if (!queryPage) queryPage = page;
+    if (!querySize) querySize = size;
     return [queryPage, querySize];
   }
+
+  const handleDelete = async(selfLink) => {
+    try {
+      await employeeService.deleteEmployee(selfLink);
+      await fetchState();
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+    }
+  }
+
+  const handleSizeChange = (newSize) => {
+    setSize(newSize);
+    setPage(0);
+    fetchState(0, newSize);
+  };
 
   return (
     <Router>
@@ -86,6 +101,8 @@ function App() {
               closeModal={closeModal}
               openModal={openModal}
               links={links}
+              handleDelete={handleDelete}
+              handleSizeChange={handleSizeChange}
           />} />
         </Routes>
       </div>
