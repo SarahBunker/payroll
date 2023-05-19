@@ -13,8 +13,6 @@ const createEmployee = async (employeeData) => {
 }
 
 const updateEmployee = async (employeeUrl, updatedEmployeeData, etag) => {
-  console.log("update Employee");
-  console.log({updatedEmployeeData});
   try {
     const response = await axios.put(employeeUrl, updatedEmployeeData, {
       headers: {

@@ -9,8 +9,6 @@ function Employee({ employee, handleDelete, clickUpdate }) {
     clickUpdate(employee);
   }
 
-  console.log({employee})
-
   return (
     <tr>
       <td>{employee.firstName}</td>

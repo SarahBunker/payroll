@@ -9,6 +9,7 @@ function App() {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [links, setLinks] = useState({});
+  // const [pages, setPages] = useState({});
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(2);
 
@@ -47,7 +48,7 @@ function App() {
   async function handleCreate(employeeData) {
     try {
       await employeeService.createEmployee(employeeData);
-      await fetchState();
+      await fetchState(page, size);
       closeModal();
       // go to last page
     } catch (error) {
@@ -56,8 +57,6 @@ function App() {
   }
 
   async function handleUpdate(employee, updatedEmployee) {
-    console.log("handle update function");
-    console.log({employee});
     try {
       await employeeService.updateEmployee(employee._links.self.href, updatedEmployee, employee.headers.Etag);
       await fetchState();
