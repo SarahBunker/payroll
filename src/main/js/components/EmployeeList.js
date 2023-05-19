@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Employee from './Employee';
 import CreateDialog from './CreateDialog';
+import UpdateDialog from './UpdateDialog';
 import NavBar from './NavBar';
 
 function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size}) {
+  const attributes = ['firstName', 'lastName', 'description']
 
   const navLinks = [];
   if ("first" in links) {
@@ -70,10 +72,16 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal,
       {isModalOpen && (
         <div className='modal'>
           <div className='modal-content'>
-            <CreateDialog
+            {/* <CreateDialog
               onCreate={onCreate}
               onClose={closeModal}
               attributes={['firstName', 'lastName', 'description']}
+            /> */}
+            <UpdateDialog
+              onUpdate={onCreate}
+              onClose={closeModal}
+              attributes={attributes}
+              employee={employees[0]}
             />
           </div>
         </div>
