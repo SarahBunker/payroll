@@ -13,13 +13,25 @@ function App() {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(2);
 
+  // const fetchState = async (page, size) => {
+  //   try {
+  //     const hal = await employeeService.loadFromServer(page, size);
+  //     let links = modifyBackendUrls(hal._links)
+  //     setLinks(links);
+  //     setPages(hal.pages);
+  //     setEmployees(hal._embedded.employees);
+  //   } catch (error) {
+  //     console.error('Error updating state:', error);
+  //   }
+  // };
+
   const fetchState = async (page, size) => {
     try {
       const hal = await employeeService.loadFromServer(page, size);
-      let links = modifyBackendUrls(hal._links)
+      let links = modifyBackendUrls(hal.links)
       setLinks(links);
-      setPages(hal.pages);
-      setEmployees(hal._embedded.employees);
+      // setPages(hal.pages);
+      setEmployees(hal.employees);
     } catch (error) {
       console.error('Error updating state:', error);
     }
