@@ -41853,20 +41853,17 @@ function App() {
     setIsModalOpen = _useState4[1];
   var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({}),
     _useState6 = _slicedToArray(_useState5, 2),
-    pages = _useState6[0],
-    setPages = _useState6[1];
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({}),
+    links = _useState6[0],
+    setLinks = _useState6[1];
+  // const [pages, setPages] = useState({});
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
     _useState8 = _slicedToArray(_useState7, 2),
-    links = _useState8[0],
-    setLinks = _useState8[1];
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
+    page = _useState8[0],
+    setPage = _useState8[1];
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(2),
     _useState10 = _slicedToArray(_useState9, 2),
-    page = _useState10[0],
-    setPage = _useState10[1];
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(2),
-    _useState12 = _slicedToArray(_useState11, 2),
-    size = _useState12[0],
-    setSize = _useState12[1];
+    size = _useState10[0],
+    setSize = _useState10[1];
   var fetchState = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, size) {
       var hal, _links;
@@ -41878,21 +41875,20 @@ function App() {
             return _services_employeeService__WEBPACK_IMPORTED_MODULE_3__["default"].loadFromServer(page, size);
           case 3:
             hal = _context.sent;
-            _links = modifyBackendUrls(hal._links);
+            _links = modifyBackendUrls(hal.links);
             setLinks(_links);
-            setPages(hal.pages);
-            setEmployees(hal._embedded.employees);
-            _context.next = 13;
+            setEmployees(hal.employees);
+            _context.next = 12;
             break;
-          case 10:
-            _context.prev = 10;
+          case 9:
+            _context.prev = 9;
             _context.t0 = _context["catch"](0);
             console.error('Error updating state:', _context.t0);
-          case 13:
+          case 12:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 10]]);
+      }, _callee, null, [[0, 9]]);
     }));
     return function fetchState(_x2, _x3) {
       return _ref.apply(this, arguments);
@@ -41912,47 +41908,74 @@ function App() {
     return modifiedLinks;
   }
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    // let [page, size] = getParams();
-    fetchState(page, size);
-  }, [page, size]);
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     var _getParams = getParams(),
       _getParams2 = _slicedToArray(_getParams, 2),
-      page = _getParams2[0],
-      size = _getParams2[1];
-    setPage(page);
-    setSize(size);
-  }, []);
-  function onCreate(_x4) {
-    return _onCreate.apply(this, arguments);
+      queryPage = _getParams2[0],
+      querySize = _getParams2[1];
+    fetchState(queryPage, querySize);
+  }, [page, size]);
+  function handleCreate(_x4) {
+    return _handleCreate.apply(this, arguments);
   }
-  function _onCreate() {
-    _onCreate = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(employeeData) {
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+  function _handleCreate() {
+    _handleCreate = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(employeeData) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            _context3.prev = 0;
+            _context3.next = 3;
             return _services_employeeService__WEBPACK_IMPORTED_MODULE_3__["default"].createEmployee(employeeData);
           case 3:
-            _context2.next = 5;
-            return fetchState();
+            _context3.next = 5;
+            return fetchState(page, size);
           case 5:
             closeModal();
-            // go to last page
-            _context2.next = 11;
+            _context3.next = 11;
             break;
           case 8:
-            _context2.prev = 8;
-            _context2.t0 = _context2["catch"](0);
-            console.error('Error creating employee:', _context2.t0);
+            _context3.prev = 8;
+            _context3.t0 = _context3["catch"](0);
+            console.error('Error creating employee:', _context3.t0);
           case 11:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2, null, [[0, 8]]);
+      }, _callee3, null, [[0, 8]]);
     }));
-    return _onCreate.apply(this, arguments);
+    return _handleCreate.apply(this, arguments);
+  }
+  function handleUpdate(_x5, _x6) {
+    return _handleUpdate.apply(this, arguments);
+  }
+  function _handleUpdate() {
+    _handleUpdate = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(employee, updatedEmployee) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            _context4.next = 3;
+            return _services_employeeService__WEBPACK_IMPORTED_MODULE_3__["default"].updateEmployee(employee._links.self.href, updatedEmployee, employee.headers.Etag);
+          case 3:
+            _context4.next = 5;
+            return fetchState();
+          case 5:
+            _context4.next = 10;
+            break;
+          case 7:
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](0);
+            if (_context4.t0.response && _context4.t0.response.status === 412) {
+              alert("DENIED: Unable to update ".concat(employee.entity._links.self.href, ". Your copy is stale."));
+            } else {
+              console.error('Error updating employee:', _context4.t0);
+            }
+          case 10:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4, null, [[0, 7]]);
+    }));
+    return _handleUpdate.apply(this, arguments);
   }
   var openModal = function openModal() {
     setIsModalOpen(true);
@@ -41964,9 +41987,43 @@ function App() {
     var queryParameters = new URLSearchParams(location.search);
     var queryPage = queryParameters.get("page");
     var querySize = queryParameters.get("size");
-    if (!queryPage) queryPage = 0;
-    if (!querySize) querySize = 10;
+    if (!queryPage) queryPage = page;
+    if (!querySize) querySize = size;
     return [queryPage, querySize];
+  };
+  var handleDelete = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(selfLink) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.next = 3;
+            return _services_employeeService__WEBPACK_IMPORTED_MODULE_3__["default"].deleteEmployee(selfLink);
+          case 3:
+            _context2.next = 5;
+            return fetchState();
+          case 5:
+            _context2.next = 10;
+            break;
+          case 7:
+            _context2.prev = 7;
+            _context2.t0 = _context2["catch"](0);
+            console.error('Error deleting employee:', _context2.t0);
+          case 10:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 7]]);
+    }));
+    return function handleDelete(_x7) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var handleSizeChange = function handleSizeChange(event) {
+    var newSize = event.target.value;
+    setSize(newSize);
+    setPage(0);
+    fetchState(0, newSize);
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "container"
@@ -41974,11 +42031,15 @@ function App() {
     path: "/",
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_EmployeeList__WEBPACK_IMPORTED_MODULE_4__["default"], {
       employees: employees,
-      onCreate: onCreate,
+      handleCreate: handleCreate,
       isModalOpen: isModalOpen,
       closeModal: closeModal,
       openModal: openModal,
-      links: links
+      links: links,
+      handleDelete: handleDelete,
+      handleSizeChange: handleSizeChange,
+      size: size,
+      handleUpdate: handleUpdate
     })
   }))));
 }
@@ -42012,7 +42073,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function CreateDialog(_ref) {
   var attributes = _ref.attributes,
-    onCreate = _ref.onCreate,
+    handleCreate = _ref.handleCreate,
     onClose = _ref.onClose;
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({}),
     _useState2 = _slicedToArray(_useState, 2),
@@ -42026,9 +42087,9 @@ function CreateDialog(_ref) {
       return _objectSpread(_objectSpread({}, prevData), {}, _defineProperty({}, name, value.trim()));
     });
   };
-  var handleSubmit = function handleSubmit(e) {
+  var onSubmit = function onSubmit(e) {
     e.preventDefault();
-    onCreate(employeeData);
+    handleCreate(employeeData);
 
     // Clear out the dialog's inputs
     setEmployeeData({});
@@ -42054,8 +42115,8 @@ function CreateDialog(_ref) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     className: "close-icon"
   }, "X")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Create new employee"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, inputs, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    onClick: handleSubmit
-  }, "Create")));
+    onClick: onSubmit
+  }, "Submit")));
 }
 /* harmony default export */ __webpack_exports__["default"] = (CreateDialog);
 
@@ -42074,8 +42135,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 function Employee(_ref) {
-  var employee = _ref.employee;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, employee.firstName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, employee.lastName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, employee.description));
+  var employee = _ref.employee,
+    handleDelete = _ref.handleDelete,
+    clickUpdate = _ref.clickUpdate;
+  var onDelete = function onDelete() {
+    handleDelete(employee._links.self.href);
+  };
+  var handleClickUpdate = function handleClickUpdate() {
+    clickUpdate(employee);
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, employee.firstName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, employee.lastName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, employee.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: handleClickUpdate
+  }, "Update")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: onDelete
+  }, "Delete")));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Employee);
 
@@ -42095,7 +42168,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/dist/index.js");
 /* harmony import */ var _Employee__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Employee */ "./src/main/js/components/Employee.js");
 /* harmony import */ var _CreateDialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CreateDialog */ "./src/main/js/components/CreateDialog.js");
-/* harmony import */ var _NavBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./NavBar */ "./src/main/js/components/NavBar.js");
+/* harmony import */ var _UpdateDialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./UpdateDialog */ "./src/main/js/components/UpdateDialog.js");
+/* harmony import */ var _NavBar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NavBar */ "./src/main/js/components/NavBar.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -42103,11 +42184,24 @@ __webpack_require__.r(__webpack_exports__);
 
 function EmployeeList(_ref) {
   var employees = _ref.employees,
-    onCreate = _ref.onCreate,
+    handleCreate = _ref.handleCreate,
     isModalOpen = _ref.isModalOpen,
     openModal = _ref.openModal,
     closeModal = _ref.closeModal,
-    links = _ref.links;
+    links = _ref.links,
+    handleDelete = _ref.handleDelete,
+    handleSizeChange = _ref.handleSizeChange,
+    size = _ref.size,
+    handleUpdate = _ref.handleUpdate;
+  var attributes = ['firstName', 'lastName', 'description'];
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isUpdateModalOpen = _useState2[0],
+    setUpdateModalOpen = _useState2[1];
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    selectedEmployee = _useState4[0],
+    setSelectedEmployee = _useState4[1];
   var navLinks = [];
   if ("first" in links) {
     var linkUrl = links.first.href;
@@ -42137,26 +42231,63 @@ function EmployeeList(_ref) {
       to: _linkUrl3
     }, ">>"));
   }
+  var openUpdateModal = function openUpdateModal(employee) {
+    setSelectedEmployee(employee);
+    setUpdateModalOpen(true);
+  };
+  var closeUpdateModal = function closeUpdateModal() {
+    setUpdateModalOpen(false);
+    setSelectedEmployee(null);
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "container"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: openModal
-  }, "Create")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+  }, "Create"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    style: {
+      paddingTop: '10px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    htmlFor: "size-select"
+  }, "Number of Records:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+    id: "size-select",
+    value: size,
+    onChange: handleSizeChange
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+    value: 2
+  }, "2"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+    value: 5
+  }, "5"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+    value: 10
+  }, "10"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+    value: 20
+  }, "20")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
     className: "employee-table"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "First Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Last Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Description")), employees.map(function (employee) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Employee__WEBPACK_IMPORTED_MODULE_2__["default"], {
       key: employee._links.self.href,
-      employee: employee
+      employee: employee,
+      handleDelete: handleDelete,
+      clickUpdate: openUpdateModal
     });
   }))), isModalOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "modal"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "modal-content"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CreateDialog__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    onCreate: onCreate,
+    handleCreate: handleCreate,
     onClose: closeModal,
-    attributes: ['firstName', 'lastName', 'description']
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NavBar__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    attributes: attributes
+  }))), isUpdateModalOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal-content"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_UpdateDialog__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    handleUpdate: handleUpdate,
+    employee: selectedEmployee,
+    onClose: closeUpdateModal,
+    attributes: attributes
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NavBar__WEBPACK_IMPORTED_MODULE_5__["default"], {
     links: links
   }));
 }
@@ -42175,57 +42306,148 @@ function EmployeeList(_ref) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/dist/index.js");
-
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function NavBar(_ref) {
+  var _links$first, _links$prev, _links$next, _links$last;
   var links = _ref.links;
-  var navLinks = [];
-  if ("first" in links) {
-    var linkUrl = links.first.href;
-    navLinks.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-      key: "first",
-      to: linkUrl,
-      className: "nav-link"
-    }, "<<", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-      className: "tooltip"
-    }, "First Page")));
-  }
-  if ("prev" in links) {
-    var _linkUrl = links.prev.href;
-    navLinks.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-      key: "prev",
-      to: _linkUrl,
-      className: "nav-link"
-    }, "<", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-      className: "tooltip"
-    }, "Previous Page")));
-  }
-  if ("next" in links) {
-    var _linkUrl2 = links.next.href;
-    navLinks.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-      key: "next",
-      to: _linkUrl2,
-      className: "nav-link"
-    }, ">", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-      className: "tooltip"
-    }, "Next Page")));
-  }
-  if ("last" in links) {
-    var _linkUrl3 = links.last.href;
-    navLinks.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-      key: "last",
-      to: _linkUrl3,
-      className: "nav-link"
-    }, ">>", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-      className: "tooltip"
-    }, "Last Page")));
-  }
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(-1),
+    _useState2 = _slicedToArray(_useState, 2),
+    activeTooltipIndex = _useState2[0],
+    setActiveTooltipIndex = _useState2[1];
+  var handleMouseEnter = function handleMouseEnter(index) {
+    setActiveTooltipIndex(index);
+  };
+  var handleMouseLeave = function handleMouseLeave() {
+    setActiveTooltipIndex(-1);
+  };
+  var navLinks = [{
+    key: "first",
+    text: "<<",
+    tooltip: "First Page",
+    href: (_links$first = links.first) === null || _links$first === void 0 ? void 0 : _links$first.href
+  }, {
+    key: "prev",
+    text: "<",
+    tooltip: "Previous Page",
+    href: (_links$prev = links.prev) === null || _links$prev === void 0 ? void 0 : _links$prev.href
+  }, {
+    key: "next",
+    text: ">",
+    tooltip: "Next Page",
+    href: (_links$next = links.next) === null || _links$next === void 0 ? void 0 : _links$next.href
+  }, {
+    key: "last",
+    text: ">>",
+    tooltip: "Last Page",
+    href: (_links$last = links.last) === null || _links$last === void 0 ? void 0 : _links$last.href
+  }];
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "nav-links"
-  }, navLinks);
+  }, navLinks.map(function (_ref2, index) {
+    var key = _ref2.key,
+      text = _ref2.text,
+      tooltip = _ref2.tooltip,
+      href = _ref2.href;
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      key: key,
+      href: href,
+      className: "nav-button",
+      onMouseEnter: function onMouseEnter() {
+        return handleMouseEnter(index);
+      },
+      onMouseLeave: handleMouseLeave
+    }, text, activeTooltipIndex === index && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      className: "tooltip"
+    }, tooltip));
+  }));
 }
 /* harmony default export */ __webpack_exports__["default"] = (NavBar);
+
+/***/ }),
+
+/***/ "./src/main/js/components/UpdateDialog.js":
+/*!************************************************!*\
+  !*** ./src/main/js/components/UpdateDialog.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function UpdateDialog(_ref) {
+  var attributes = _ref.attributes,
+    employee = _ref.employee,
+    handleUpdate = _ref.handleUpdate,
+    onClose = _ref.onClose;
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(_objectSpread({}, employee)),
+    _useState2 = _slicedToArray(_useState, 2),
+    updatedEmployeeData = _useState2[0],
+    setUpdatedEmployeeData = _useState2[1];
+  var handleChange = function handleChange(e) {
+    var _e$target = e.target,
+      name = _e$target.name,
+      value = _e$target.value;
+    setUpdatedEmployeeData(function (prevData) {
+      return _objectSpread(_objectSpread({}, prevData), {}, _defineProperty({}, name, value.trim()));
+    });
+  };
+  var handleSubmit = function handleSubmit(e) {
+    e.preventDefault();
+    handleUpdate(employee, updatedEmployeeData);
+
+    // Clear out the dialog's inputs
+    setUpdatedEmployeeData({});
+    onClose();
+  };
+  var inputs = attributes.map(function (attribute) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+      key: attribute
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      type: "text",
+      placeholder: attribute,
+      name: attribute,
+      value: updatedEmployeeData[attribute] || employee[attribute] || '',
+      onChange: handleChange,
+      className: "field"
+    }));
+  });
+  var dialogId = "updateEmployee-".concat(employee._links.self.href);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    key: employee._links.self.href
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: dialogId,
+    className: "modalDialog"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "modal-close",
+    onClick: onClose
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "close-icon"
+  }, "X")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Update employee"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, inputs, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: handleSubmit
+  }, "Submit")))));
+}
+/* harmony default export */ __webpack_exports__["default"] = (UpdateDialog);
 
 /***/ }),
 
@@ -42247,7 +42469,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var root = "/api";
 var createEmployee = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(employeeData) {
-    var response;
+    var response, res;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -42256,86 +42478,159 @@ var createEmployee = /*#__PURE__*/function () {
           return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post("".concat(root, "/employees"), employeeData);
         case 3:
           response = _context.sent;
+          console.log("employee Service");
+          res = response.data;
+          console.log({
+            res: res
+          });
           return _context.abrupt("return", response.data);
-        case 7:
-          _context.prev = 7;
+        case 10:
+          _context.prev = 10;
           _context.t0 = _context["catch"](0);
           console.error('Error Fetching employees:', _context.t0);
           throw _context.t0;
-        case 11:
+        case 14:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 7]]);
+    }, _callee, null, [[0, 10]]);
   }));
   return function createEmployee(_x) {
     return _ref.apply(this, arguments);
   };
 }();
-var getEmployees = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(page, size) {
-    var response, hal;
+var updateEmployee = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(employeeUrl, updatedEmployeeData, etag) {
+    var response;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("".concat(root, "/employees?page=").concat(page, "&size=").concat(size));
+          return axios__WEBPACK_IMPORTED_MODULE_0__["default"].put(employeeUrl, updatedEmployeeData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'If-Match': etag
+            }
+          });
         case 3:
           response = _context2.sent;
-          hal = response.data;
-          console.log({
-            hal: hal
-          });
-          return _context2.abrupt("return", response.data._embedded.employees);
-        case 9:
-          _context2.prev = 9;
+          return _context2.abrupt("return", response.data);
+        case 7:
+          _context2.prev = 7;
           _context2.t0 = _context2["catch"](0);
+          console.error('Error updating employee:', _context2.t0);
           throw _context2.t0;
-        case 12:
+        case 11:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[0, 9]]);
+    }, _callee2, null, [[0, 7]]);
   }));
-  return function getEmployees(_x2, _x3) {
+  return function updateEmployee(_x2, _x3, _x4) {
     return _ref2.apply(this, arguments);
   };
 }();
 var loadFromServer = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(page, size) {
-    var response, hal;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(page, size) {
+    var response, employeeCollection, schemaResponse, schema, employeePromises, employees;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
         case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
+          _context4.prev = 0;
+          _context4.next = 3;
           return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("".concat(root, "/employees?page=").concat(page, "&size=").concat(size));
         case 3:
-          response = _context3.sent;
-          hal = response.data;
-          console.log({
-            hal: hal
+          response = _context4.sent;
+          employeeCollection = response.data;
+          _context4.next = 7;
+          return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get(employeeCollection._links.profile.href, {
+            headers: {
+              'Accept': 'application/schema+json'
+            }
           });
-          return _context3.abrupt("return", hal);
-        case 9:
-          _context3.prev = 9;
-          _context3.t0 = _context3["catch"](0);
-          throw _context3.t0;
+        case 7:
+          schemaResponse = _context4.sent;
+          schema = schemaResponse.data;
+          employeePromises = employeeCollection._embedded.employees.map( /*#__PURE__*/function () {
+            var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(employee) {
+              var employeeResponse, etag, employeeData;
+              return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                while (1) switch (_context3.prev = _context3.next) {
+                  case 0:
+                    _context3.next = 2;
+                    return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get(employee._links.self.href);
+                  case 2:
+                    employeeResponse = _context3.sent;
+                    etag = employeeResponse.headers.etag;
+                    employeeData = employeeResponse.data;
+                    employeeData.headers = {
+                      Etag: etag
+                    };
+                    return _context3.abrupt("return", employeeData);
+                  case 7:
+                  case "end":
+                    return _context3.stop();
+                }
+              }, _callee3);
+            }));
+            return function (_x7) {
+              return _ref4.apply(this, arguments);
+            };
+          }());
+          _context4.next = 12;
+          return Promise.all(employeePromises);
         case 12:
+          employees = _context4.sent;
+          return _context4.abrupt("return", {
+            schema: schema,
+            employees: employees,
+            links: employeeCollection._links
+          });
+        case 16:
+          _context4.prev = 16;
+          _context4.t0 = _context4["catch"](0);
+          throw _context4.t0;
+        case 19:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
-    }, _callee3, null, [[0, 9]]);
+    }, _callee4, null, [[0, 16]]);
   }));
-  return function loadFromServer(_x4, _x5) {
+  return function loadFromServer(_x5, _x6) {
     return _ref3.apply(this, arguments);
+  };
+}();
+var deleteEmployee = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(selfLink) {
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          _context5.next = 3;
+          return axios__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"](selfLink);
+        case 3:
+          _context5.next = 8;
+          break;
+        case 5:
+          _context5.prev = 5;
+          _context5.t0 = _context5["catch"](0);
+          throw _context5.t0;
+        case 8:
+        case "end":
+          return _context5.stop();
+      }
+    }, _callee5, null, [[0, 5]]);
+  }));
+  return function deleteEmployee(_x8) {
+    return _ref5.apply(this, arguments);
   };
 }();
 var employeeService = {
   createEmployee: createEmployee,
-  getEmployees: getEmployees,
-  loadFromServer: loadFromServer
+  loadFromServer: loadFromServer,
+  deleteEmployee: deleteEmployee,
+  updateEmployee: updateEmployee
 };
 /* harmony default export */ __webpack_exports__["default"] = (employeeService);
 

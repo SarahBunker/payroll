@@ -5,6 +5,9 @@ const root = "/api";
 const createEmployee = async (employeeData) => {
   try {
     const response = await axios.post(`${root}/employees`, employeeData);
+    console.log("employee Service");
+    let res = response.data;
+    console.log({res});
     return response.data;
   } catch (error) {
     console.error('Error Fetching employees:', error);

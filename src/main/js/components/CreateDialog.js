@@ -11,7 +11,7 @@ function CreateDialog({ attributes, handleCreate, onClose }) {
     }));
   };
 
-  const onClick = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     handleCreate(employeeData);
 
@@ -40,7 +40,7 @@ function CreateDialog({ attributes, handleCreate, onClose }) {
       <h2>Create new employee</h2>
       <form>
         {inputs}
-        <button onClick={onClick}>Create</button>
+        <button onClick={onSubmit}>Submit</button>
       </form>
     </div>
   );

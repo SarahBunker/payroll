@@ -1,49 +1,108 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import Employee from './Employee';
 import CreateDialog from './CreateDialog';
 import UpdateDialog from './UpdateDialog';
 import NavBar from './NavBar';
 
-function EmployeeList({ employees, handleCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size, handleUpdate}) {
-  const attributes = ['firstName', 'lastName', 'description']
+import employeeService from '../services/employeeService';
+
+function EmployeeList() {
   const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [employees, setEmployees] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [links, setLinks] = useState({});
+  // const [pages, setPages] = useState({});
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(2);
+  const attributes = ['firstName', 'lastName', 'description']
 
-  const navLinks = [];
-  if ("first" in links) {
-    const linkUrl = links.first.href;
-    navLinks.push(
-      <Link key="first" to={linkUrl}>
-        &lt;&lt;
-      </Link>
-    );
+  useEffect(() => {
+    const [queryPage, querySize] = getParams();
+    fetchState(queryPage, querySize);
+  }, [page, size]);
+
+  //useEffect general?
+
+  const fetchState = async (page, size) => {
+    try {
+      const hal = await employeeService.loadFromServer(page, size);
+      let links = modifyBackendUrls(hal.links)
+      setLinks(links);
+      setEmployees(hal.employees);
+    } catch (error) {
+      console.error('Error updating state:', error);
+    }
+  };
+
+  function modifyBackendUrls(links) {
+    const modifiedLinks = {};
+  
+    for (const key in links) {
+      if (links.hasOwnProperty(key)) {
+        const url = links[key].href;
+        const modifiedUrl = url.replace('/api/employees', '/');
+        modifiedLinks[key] = {
+          href: modifiedUrl
+        };
+      }
+    }
+  
+    return modifiedLinks;
   }
-  if ("prev" in links) {
-    const linkUrl = links.prev.href;
-    navLinks.push(
-      <Link key="prev" to={linkUrl}>
-        &lt;
-      </Link>
-    );
-  }
-  if ("next" in links) {
-    const linkUrl = links.next.href;
-    navLinks.push(
-      <Link key="next" to={linkUrl}>
-        &gt;
-      </Link>
-    );
-  }
-  if ("last" in links) {
-    const linkUrl = links.last.href;
-    navLinks.push(
-      <Link key="last" to={linkUrl}>
-        &gt;&gt;
-      </Link>
-    );
+  
+  async function handleCreate(employeeData) {
+    try {
+      await employeeService.createEmployee(employeeData);
+      alert(`Employee [${employeeData.firstName} | ${employeeData.lastName} | ${employeeData.description}] created successfully`);
+      await fetchState(page, size);
+      closeModal();
+      // go to last page
+    } catch (error) {
+      console.error('Error creating employee:', error);
+    }
   }
 
+  async function handleUpdate(employee, updatedEmployee) {
+    try {
+      await employeeService.updateEmployee(employee._links.self.href, updatedEmployee, employee.headers.Etag);
+      await fetchState();
+    } catch (error) {
+      if (error.response && error.response.status === 412) {
+        alert(`DENIED: Unable to update ${employee.entity._links.self.href}. Your copy is stale.`);
+      } else {
+        console.error('Error updating employee:', error);
+      }
+    }
+  }
+
+  const handleDelete = async(selfLink) => {
+    try {
+      await employeeService.deleteEmployee(selfLink);
+      await fetchState();
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+    }
+  }
+
+  const handleSizeChange = (event) => {
+    const newSize = event.target.value;
+    setSize(newSize);
+    setPage(0);
+    fetchState(0, newSize);
+  };
+
+  // const navLinks = Object.entries(links).map(([key, value]) => {
+  //   const linkUrl = value.href;
+  //   const linkText = key === 'first' ? '<<' : key === 'prev' ? '<' : key === 'next' ? '>' : '>>';
+  
+  //   return (
+  //     <Link key={key} to={linkUrl}>
+  //       {linkText}
+  //     </Link>
+  //   );
+  // });
+  
   const openUpdateModal = (employee) => {
     setSelectedEmployee(employee);
     setUpdateModalOpen(true);
@@ -53,6 +112,23 @@ function EmployeeList({ employees, handleCreate, isModalOpen, openModal, closeMo
     setUpdateModalOpen(false);
     setSelectedEmployee(null);
   };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const getParams = () => {
+    const queryParameters = new URLSearchParams(location.search);
+    let queryPage = queryParameters.get("page");
+    let querySize = queryParameters.get("size");
+    if (!queryPage) queryPage = page;
+    if (!querySize) querySize = size;
+    return [queryPage, querySize];
+  }
 
   return (
     <div>
