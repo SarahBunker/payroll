@@ -8,7 +8,6 @@ import EmployeeList from './components/EmployeeList';
 function App() {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [pages, setPages] = useState({});
   const [links, setLinks] = useState({});
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(2);
@@ -18,7 +17,6 @@ function App() {
       const hal = await employeeService.loadFromServer(page, size);
       let links = modifyBackendUrls(hal.links)
       setLinks(links);
-      // setPages(hal.employees.length);
       setEmployees(hal.employees);
     } catch (error) {
       console.error('Error updating state:', error);
@@ -46,7 +44,7 @@ function App() {
     fetchState(queryPage, querySize);
   }, [page, size]);
   
-  async function onCreate(employeeData) {
+  async function handleCreate(employeeData) {
     try {
       await employeeService.createEmployee(employeeData);
       await fetchState();
@@ -112,7 +110,7 @@ function App() {
           <Route path='/' element={
             <EmployeeList
               employees={employees}
-              onCreate={onCreate}
+              handleCreate={handleCreate}
               isModalOpen={isModalOpen}
               closeModal={closeModal}
               openModal={openModal}

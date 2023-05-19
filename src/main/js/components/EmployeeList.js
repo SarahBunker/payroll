@@ -5,7 +5,7 @@ import CreateDialog from './CreateDialog';
 import UpdateDialog from './UpdateDialog';
 import NavBar from './NavBar';
 
-function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size, handleUpdate}) {
+function EmployeeList({ employees, handleCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size, handleUpdate}) {
   const attributes = ['firstName', 'lastName', 'description']
   const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -90,7 +90,7 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal,
         <div className='modal'>
           <div className='modal-content'>
             <CreateDialog
-              onCreate={onCreate}
+              handleCreate={handleCreate}
               onClose={closeModal}
               attributes={attributes}
             />

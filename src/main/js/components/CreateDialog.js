@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CreateDialog({ attributes, onCreate, onClose }) {
+function CreateDialog({ attributes, handleCreate, onClose }) {
   const [employeeData, setEmployeeData] = useState({});
 
   const handleChange = (e) => {
@@ -11,9 +11,9 @@ function CreateDialog({ attributes, onCreate, onClose }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const onClick = (e) => {
     e.preventDefault();
-    onCreate(employeeData);
+    handleCreate(employeeData);
 
     // Clear out the dialog's inputs
     setEmployeeData({});
@@ -40,7 +40,7 @@ function CreateDialog({ attributes, onCreate, onClose }) {
       <h2>Create new employee</h2>
       <form>
         {inputs}
-        <button onClick={handleSubmit}>Create</button>
+        <button onClick={onClick}>Create</button>
       </form>
     </div>
   );
