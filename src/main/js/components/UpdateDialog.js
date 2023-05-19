@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-function UpdateDialog({ attributes, employee, onUpdate, onClose }) {
-  const [updatedEmployeeData, setUpdatedEmployeeData] = useState({});
+function UpdateDialog({ attributes, employee, handleUpdate, onClose }) {
+  const [updatedEmployeeData, setUpdatedEmployeeData] = useState({...employee});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,10 +13,11 @@ function UpdateDialog({ attributes, employee, onUpdate, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdate(employee, updatedEmployeeData);
+    handleUpdate(employee, updatedEmployeeData);
 
     // Clear out the dialog's inputs
     setUpdatedEmployeeData({});
+    onClose();
   };
 
   const inputs = attributes.map((attribute) => (
@@ -41,10 +42,10 @@ function UpdateDialog({ attributes, employee, onUpdate, onClose }) {
           <span className="close-icon">X</span>
         </button>
         <div>
-          <h2>Update an employee</h2>
+          <h2>Update employee</h2>
           <form>
             {inputs}
-            <button onClick={handleSubmit}>Update</button>
+            <button onClick={handleSubmit}>Submit</button>
           </form>
         </div>
       </div>

@@ -8,29 +8,17 @@ import EmployeeList from './components/EmployeeList';
 function App() {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [pages, setPages] = useState({});
+  // const [pages, setPages] = useState({});
   const [links, setLinks] = useState({});
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(2);
-
-  // const fetchState = async (page, size) => {
-  //   try {
-  //     const hal = await employeeService.loadFromServer(page, size);
-  //     let links = modifyBackendUrls(hal._links)
-  //     setLinks(links);
-  //     setPages(hal.pages);
-  //     setEmployees(hal._embedded.employees);
-  //   } catch (error) {
-  //     console.error('Error updating state:', error);
-  //   }
-  // };
 
   const fetchState = async (page, size) => {
     try {
       const hal = await employeeService.loadFromServer(page, size);
       let links = modifyBackendUrls(hal.links)
       setLinks(links);
-      // setPages(hal.pages);
+      // setPages(hal.employees.length);
       setEmployees(hal.employees);
     } catch (error) {
       console.error('Error updating state:', error);
@@ -66,6 +54,21 @@ function App() {
       // go to last page
     } catch (error) {
       console.error('Error creating employee:', error);
+    }
+  }
+
+  async function handleUpdate(employee, updatedEmployee) {
+    console.log("handle update function");
+    console.log({employee});
+    try {
+      await employeeService.updateEmployee(employee._links.self.href, updatedEmployee, employee.headers.Etag);
+      await fetchState();
+    } catch (error) {
+      if (error.response && error.response.status === 412) {
+        alert(`DENIED: Unable to update ${employee.entity._links.self.href}. Your copy is stale.`);
+      } else {
+        console.error('Error updating employee:', error);
+      }
     }
   }
 
@@ -117,6 +120,7 @@ function App() {
               handleDelete={handleDelete}
               handleSizeChange={handleSizeChange}
               size={size}
+              handleUpdate={handleUpdate}
           />} />
         </Routes>
       </div>

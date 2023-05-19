@@ -12,27 +12,22 @@ const createEmployee = async (employeeData) => {
   }
 }
 
-const getEmployees = async (page, size) => {
+const updateEmployee = async (employeeUrl, updatedEmployeeData, etag) => {
+  console.log("update Employee");
+  console.log({updatedEmployeeData});
   try {
-    const response = await axios.get(`${root}/employees?page=${page}&size=${size}`);
-    let hal = response.data;
-    console.log({hal})
-    return response.data._embedded.employees;
+    const response = await axios.put(employeeUrl, updatedEmployeeData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'If-Match': etag
+      }
+    });
+    return response.data;
   } catch (error) {
+    console.error('Error updating employee:', error);
     throw error;
   }
-}
-
-// const loadFromServer = async (page, size) => {
-//   try {
-//     const response = await axios.get(`${root}/employees?page=${page}&size=${size}`);
-//     let hal = response.data;
-//     console.log({hal});
-//     return hal
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+};
 
 const loadFromServer = async (page, size) => {
   try {
@@ -42,11 +37,14 @@ const loadFromServer = async (page, size) => {
       headers: { 'Accept': 'application/schema+json' }
     });
     const schema = schemaResponse.data;
-    const employeePromises = employeeCollection._embedded.employees.map(employee =>
-      axios.get(employee._links.self.href)
-    );
-    const employeesResponse = await Promise.all(employeePromises);
-    const employees = employeesResponse.map(response => response.data);
+    const employeePromises = employeeCollection._embedded.employees.map(async (employee) => {
+      const employeeResponse = await axios.get(employee._links.self.href);
+      const etag = employeeResponse.headers.etag;
+      const employeeData = employeeResponse.data;
+      employeeData.headers = { Etag: etag };
+      return employeeData;
+    });
+    const employees = await Promise.all(employeePromises);
 
     return {
       schema: schema,
@@ -58,6 +56,7 @@ const loadFromServer = async (page, size) => {
   }
 };
 
+
 const deleteEmployee = async (selfLink) => {
   try {
     await axios.delete(selfLink);
@@ -68,9 +67,9 @@ const deleteEmployee = async (selfLink) => {
 
 const employeeService = {
   createEmployee,
-  getEmployees,
   loadFromServer,
-  deleteEmployee
+  deleteEmployee,
+  updateEmployee
 }
 
 export default employeeService;

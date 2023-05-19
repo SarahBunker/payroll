@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Employee from './Employee';
 import CreateDialog from './CreateDialog';
 import UpdateDialog from './UpdateDialog';
 import NavBar from './NavBar';
 
-function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size}) {
+function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal, links, handleDelete, handleSizeChange, size, handleUpdate}) {
   const attributes = ['firstName', 'lastName', 'description']
+  const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const navLinks = [];
   if ("first" in links) {
@@ -42,6 +44,16 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal,
     );
   }
 
+  const openUpdateModal = (employee) => {
+    setSelectedEmployee(employee);
+    setUpdateModalOpen(true);
+  };
+
+  const closeUpdateModal = () => {
+    setUpdateModalOpen(false);
+    setSelectedEmployee(null);
+  };
+
   return (
     <div>
       <div className='container'>
@@ -65,29 +77,38 @@ function EmployeeList({ employees, onCreate, isModalOpen, openModal, closeModal,
             <th>Description</th>
           </tr>
           {employees.map((employee) => (
-            <Employee key={employee._links.self.href} employee={employee} handleDelete={handleDelete}/>
+            <Employee 
+              key={employee._links.self.href}
+              employee={employee}
+              handleDelete={handleDelete}
+              clickUpdate={openUpdateModal}
+            />
           ))}
         </tbody>
       </table>
       {isModalOpen && (
         <div className='modal'>
           <div className='modal-content'>
-            {/* <CreateDialog
+            <CreateDialog
               onCreate={onCreate}
               onClose={closeModal}
-              attributes={['firstName', 'lastName', 'description']}
-            /> */}
-            <UpdateDialog
-              onUpdate={onCreate}
-              onClose={closeModal}
               attributes={attributes}
-              employee={employees[0]}
             />
           </div>
         </div>
       )}
-      {/* {navLinks}
-       */}
+      {isUpdateModalOpen && (
+        <div className='modal'>
+          <div className='modal-content'>
+            <UpdateDialog
+              handleUpdate={handleUpdate}
+              employee={selectedEmployee}
+              onClose={closeUpdateModal}
+              attributes={attributes}
+            />
+          </div>
+        </div>
+      )}
       <NavBar links={links} />
     </div>
   );
