@@ -12,7 +12,7 @@ function EmployeeList() {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [links, setLinks] = useState({});
-  // const [pages, setPages] = useState({});
+  const [records, setRecords] = useState(0);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(2);
   const attributes = ['firstName', 'lastName', 'description']
@@ -22,7 +22,9 @@ function EmployeeList() {
     fetchState(queryPage, querySize);
   }, [page, size]);
 
-  //useEffect general?
+  useEffect(() => {
+    fetchState(page, size);
+  }, []);
 
   const fetchState = async (page, size) => {
     try {
@@ -50,13 +52,21 @@ function EmployeeList() {
   
     return modifiedLinks;
   }
+
+  function deterimeLastPage () {
+    let fraction = records / size;
+    console.log({fraction})
+    return Math.ceil(records / size);
+  }
   
   async function handleCreate(employeeData) {
     try {
       await employeeService.createEmployee(employeeData);
-      alert(`Employee [${employeeData.firstName} | ${employeeData.lastName} | ${employeeData.description}] created successfully`);
-      await fetchState(page, size);
+      let lastPage = deterimeLastPage();
+      await fetchState(lastPage, size);
       closeModal();
+      setRecords(records + 1)
+      alert(`Employee [${employeeData.firstName} | ${employeeData.lastName} | ${employeeData.description}] created successfully`);
       // go to last page
     } catch (error) {
       console.error('Error creating employee:', error);
@@ -66,7 +76,8 @@ function EmployeeList() {
   async function handleUpdate(employee, updatedEmployee) {
     try {
       await employeeService.updateEmployee(employee._links.self.href, updatedEmployee, employee.headers.Etag);
-      await fetchState();
+      alert(`Employee [${updatedEmployee.firstName} | ${updatedEmployee.lastName} | ${updatedEmployee.description}] updated successfully`);
+      await fetchState(page, size);
     } catch (error) {
       if (error.response && error.response.status === 412) {
         alert(`DENIED: Unable to update ${employee.entity._links.self.href}. Your copy is stale.`);
@@ -79,7 +90,9 @@ function EmployeeList() {
   const handleDelete = async(selfLink) => {
     try {
       await employeeService.deleteEmployee(selfLink);
-      await fetchState();
+      await fetchState(page, size);
+      setRecords(records - 1)
+      alert(`Employee deleted successfully`);
     } catch (error) {
       console.error('Error deleting employee:', error);
     }
@@ -91,17 +104,6 @@ function EmployeeList() {
     setPage(0);
     fetchState(0, newSize);
   };
-
-  // const navLinks = Object.entries(links).map(([key, value]) => {
-  //   const linkUrl = value.href;
-  //   const linkText = key === 'first' ? '<<' : key === 'prev' ? '<' : key === 'next' ? '>' : '>>';
-  
-  //   return (
-  //     <Link key={key} to={linkUrl}>
-  //       {linkText}
-  //     </Link>
-  //   );
-  // });
   
   const openUpdateModal = (employee) => {
     setSelectedEmployee(employee);
@@ -134,14 +136,17 @@ function EmployeeList() {
     <div>
       <div className='container'>
         <button onClick={openModal}>Create</button>
+        <div>
+          <p>{records} Total Records</p>
+        </div>
         <div style={{ paddingTop: '10px' }}>
-          <label htmlFor="size-select">Number of Records:</label>
           <select id="size-select" value={size} onChange={handleSizeChange}>
             <option value={2}>2</option>
             <option value={5}>5</option>
             <option value={10}>10</option>
             <option value={20}>20</option>
           </select>
+          <label htmlFor="size-select">  Number of Records Per Page</label>
         </div>
       </div>
       

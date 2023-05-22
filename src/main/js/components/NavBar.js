@@ -11,12 +11,15 @@ function NavBar({ links }) {
     setActiveTooltipIndex(-1);
   };
 
-  const navLinks = [
-    { key: "first", text: "<<", tooltip: "First Page", href: links.first?.href },
-    { key: "prev", text: "<", tooltip: "Previous Page", href: links.prev?.href },
-    { key: "next", text: ">", tooltip: "Next Page", href: links.next?.href },
-    { key: "last", text: ">>", tooltip: "Last Page", href: links.last?.href }
-  ];
+  const navLinks = Object.entries(links)
+    .filter(([key]) => key !== "profile" && key !== "self")
+    .map(([key, value]) => {
+      const linkUrl = value.href;
+      const linkText = key === 'first' ? '<<' : key === 'prev' ? '<' : key === 'next' ? '>' : '>>';
+      let navLink = { key: key, text: linkText, tooltip: key, href: linkUrl };
+
+      return navLink;
+    });
 
   return (
     <div className="nav-links">
