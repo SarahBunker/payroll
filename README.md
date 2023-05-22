@@ -2,17 +2,12 @@
 
 Payroll is a simple CRUD application built with a Spring boot backend using JAVA and a React frontend. It managaes a database of employees allowing you to view, add, update, and delete employes. 
 
-## Key Features
-Because Spring provides a HAL obj it was easy to implement
-
-
 ## Installation
 Clone the reposistory to your local environment and then enter into the new folder:
 ```
 git clone https://github.com/SarahBunker/payroll.git
 cd payroll
 ```
-
 
 ## Usage
 Run `npm run-script watch` to put webpack into watch mode. It will regenerate bundle.js as you edit the source.
@@ -58,8 +53,9 @@ This is the HTML template. Note that there is a `<div id="react"></div>` that is
 
 `frontend-maven-plugin` is added to the `pom.xml` build file. Which handles installing `node.js` and `npm` . It also handles `npm` commands to install dependencies for the front end into a `package.json file`. Another thing it has is a webpack command that is usefull for compiling JS.
 
-#### API
+### API
 You can access the API using cURL, Postman, or any other service. 
+It accepts all REST commands including GET, POST, PUT, and DELETE
 
 Here is a sample command and output:
 ```
@@ -109,6 +105,8 @@ curl -X POST localhost:8080/api/employees -d "{\"firstName\": \"Bilbo\", \"lastN
 ### Front End
 The focus of this project was the Backend implementation with Java. 
 Currently there are some bugs with pagination due to where the code goes after creating or updating a record. I am currently working on fixing this issue.
+
+**FIXED** fixed the pagination bug
 
 ## Dependancies
 
