@@ -1,4 +1,4 @@
-# Foobar
+# Payroll
 
 Payroll is a simple CRUD application built with a Spring boot backend using JAVA and a React frontend. It managaes a database of employees allowing you to view, add, update, and delete employes. 
 
