@@ -28,14 +28,17 @@ run `git reset --hard gitID` where you replace gitID with the id of the commit y
 ### Backend
 `src/main/java/com/sarah/payroll/Employee.java`
 This file has the data type for Employee. The class definition provides a constructor used to instantiate objects with intial attributes. the class also overides the `equal` method to provide the more applicable application of comparing the id, name and description. Another interesting method is the `toString` method which was also overriden to output a description of the object as a string instead of the class name and a hexidecimal representation of the hash code of the object.
+
 `@Entity` is used by JPA to denote the class for storage in a relational table. `@Id` and `@GeneratedValue` are JPA annotations to note the primary key which is generated automatically as needed.
+
+`@Version` and `@JsonIgnore` we added to implement **versioning**. This means an Etag with the version of the element can be compared and objects can be updated only if the current version is not stale. 
 
 `src/main/java/com/sarah/payroll/EmployeeRepository.java`
 This is the code repository. It uses the employee object type and its primary key. By extending PagingAndSortingRepository interface it comes with pre- defined methods.
 
-Spring Data is able to write JPA queries for you. This cuts down dev time and reduces bugs and errors. Spring does this by looking at names of methods in repository class and determines which operations you need including all the basic CRUD actions.
+We extended PagingAndSortingRepository because it adds extra options for setting page size and navigational links to hop to different pages like the first or next page for example. This allowed us to implement **pagination**. *Note* that the navigational links are fluidly updated based on the page size. There is also an input in the frontend UI for changing the size, or number of records fetched and displayed.
 
-FIX ME --------------------
+Spring Data is able to write JPA queries for you. This cuts down dev time and reduces bugs and errors. Spring does this by looking at names of methods in repository class and determines which operations you need including all the basic CRUD actions.
 
 `src/main/java/com/greglturnquist/payroll/DatabaseLoader.java`
 This file loads the database with a single employee, Frodo Baggins. Using `@Component` is Spring's annotation so it is picked up by the Spring Application Context.
@@ -46,6 +49,63 @@ The DatabaseLoader class also implements the CommandLineRunner which is so that 
 
 `/src/main/java/com/sarah/payroll/PayrollApplication.java`
 The project needs an entry point, a main function where the program starts executing code. This is the `public static void main` method, and we defined it in this file. Besides using `./mvnw spring-boot:run` to execute the program you could also run the `main()` method from this file.
+
+`src/main/java/com/greglturnquist/payroll/HomeController.java`
+This file is used to set up a Spring MVC controller. The `@Controller` marks the class as a controller. Controllers are used for interpreting incoming requests, sending them for further processing and advancing data to the View for processing. `@RequestMapping` marks the `index()` method for the `/` route and returns the string `index` as the name of the template. Spring Boot is autoconfigured to map it to the location of the following file.
+
+`src/main/resources/templates/index.html`
+This is the HTML template. Note that there is a `<div id="react"></div>` that is where React is directed to plug input. The `<script>` tag imports a JS bundle file that is built in target folder allowing the dependencies to be cleaned and reinstalled as needed.
+
+`frontend-maven-plugin` is added to the `pom.xml` build file. Which handles installing `node.js` and `npm` . It also handles `npm` commands to install dependencies for the front end into a `package.json file`. Another thing it has is a webpack command that is usefull for compiling JS.
+
+#### API
+You can access the API using cURL, Postman, or any other service. 
+
+Here is a sample command and output:
+```
+$ curl localhost:8080/api
+{
+  "_links" : {
+    "employees" : {
+      "href" : "http://localhost:8080/api/employees"
+    },
+    "profile" : {
+      "href" : "http://localhost:8080/api/profile"
+    }
+  }
+}
+```
+
+The output is a HAL-formatted JSON document. It includes a collection of avaible links: `_links`, an `employees` object which is the roote of the employees object defined by `EmployeeRepository`, and a `profile` which is metadata about the service.
+
+Another example command and output:
+
+```
+$ curl localhost:8080/api/employees
+{
+  "_embedded" : {
+    "employees" : [ {
+      "firstName" : "Frodo",
+      "lastName" : "Baggins",
+      "description" : "ring bearer",
+      "_links" : {
+        "self" : {
+          "href" : "http://localhost:8080/api/employees/1"
+        }
+      }
+    } ]
+  }
+}
+```
+
+In this example it shows `_links` which is used by the front end to navigate to different pages.
+
+Other commands:
+```
+curl localhost:8080/api/employees/1
+curl -X POST localhost:8080/api/employees -d "{\"firstName\": \"Bilbo\", \"lastName\": \"Baggins\", \"description\": \"burglar\"}" -H "Content-Type:application/json"
+```
+
 
 ### Front End
 
@@ -72,6 +132,12 @@ Spring Boot
 React
 - libray
 - uses components to modularly build front-end
+
+webpack
+- A toolkit used to compile JavaScript components into a single, loadable bundle
+
+babel
+- To write your JavaScript code using ES6 and compile it into ES5 to run in the browser
 
 ## License
 

@@ -23,12 +23,16 @@ const updateEmployee = async (employeeUrl, updatedEmployeeData, etag) => {
         'If-Match': etag
       }
     });
-    return response.data;
+    if (response.status >= 200 && response.status < 300) {
+      return response.data;
+    } else {
+      throw new Error(`Service Error updating employee: ${response.status}`);
+    }
   } catch (error) {
-    console.error('Error updating employee:', error);
-    throw error;
+    throw error; // Return the error instead of throwing it
   }
 };
+
 
 const loadFromServer = async (page, size) => {
   try {

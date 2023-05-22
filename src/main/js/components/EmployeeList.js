@@ -77,13 +77,16 @@ function EmployeeList() {
     try {
       await employeeService.updateEmployee(employee._links.self.href, updatedEmployee, employee.headers.Etag);
       alert(`Employee [${updatedEmployee.firstName} | ${updatedEmployee.lastName} | ${updatedEmployee.description}] updated successfully`);
-      await fetchState(page, size);
     } catch (error) {
       if (error.response && error.response.status === 412) {
-        alert(`DENIED: Unable to update ${employee.entity._links.self.href}. Your copy is stale.`);
+        console.log({employee})
+        alert(`DENIED: Unable to update ${employee._links.self.href}. Your copy is stale.`);
       } else {
         console.error('Error updating employee:', error);
       }
+    }
+    finally {
+      await fetchState(page, size);
     }
   }
 

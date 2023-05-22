@@ -42002,10 +42002,10 @@ function EmployeeList() {
     _useState10 = _slicedToArray(_useState9, 2),
     links = _useState10[0],
     setLinks = _useState10[1];
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(1),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
     _useState12 = _slicedToArray(_useState11, 2),
     records = _useState12[0],
-    setRecords = _useState12[1]; // This is set to one because our backend automatically populates this with one value for Frodo Baggins
+    setRecords = _useState12[1];
   var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
     _useState14 = _slicedToArray(_useState13, 2),
     page = _useState14[0],
@@ -42022,6 +42022,9 @@ function EmployeeList() {
       querySize = _getParams2[1];
     fetchState(queryPage, querySize);
   }, [page, size]);
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    fetchState(page, size);
+  }, []);
   var fetchState = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, size) {
       var hal, _links;
@@ -42112,6 +42115,7 @@ function EmployeeList() {
   }
   function _handleUpdate() {
     _handleUpdate = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(employee, updatedEmployee) {
+      var response;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
@@ -42123,17 +42127,25 @@ function EmployeeList() {
             _context4.next = 6;
             return fetchState(page, size);
           case 6:
-            _context4.next = 11;
+            _context4.next = 15;
             break;
           case 8:
             _context4.prev = 8;
             _context4.t0 = _context4["catch"](0);
+            response = _context4.t0.response;
+            console.log({
+              response: response
+            });
+            console.log({
+              error: _context4.t0
+            });
+            console.log(_context4.t0.response, _context4.t0.response.status === 412);
             if (_context4.t0.response && _context4.t0.response.status === 412) {
               alert("DENIED: Unable to update ".concat(employee.entity._links.self.href, ". Your copy is stale."));
             } else {
               console.error('Error updating employee:', _context4.t0);
             }
-          case 11:
+          case 15:
           case "end":
             return _context4.stop();
         }
@@ -42475,8 +42487,8 @@ var updateEmployee = /*#__PURE__*/function () {
         case 7:
           _context2.prev = 7;
           _context2.t0 = _context2["catch"](0);
-          console.error('Error updating employee:', _context2.t0);
-          throw _context2.t0;
+          console.error('Service Error updating employee:', _context2.t0);
+          return _context2.abrupt("return", _context2.t0);
         case 11:
         case "end":
           return _context2.stop();
