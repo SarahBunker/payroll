@@ -26,25 +26,25 @@ run `git reset --hard gitID` where you replace gitID with the id of the commit y
 ## Code tour
 
 ### Backend
-src/main/java/com/sarah/payroll/Employee.java
+`src/main/java/com/sarah/payroll/Employee.java`
 This file has the data type for Employee. The class definition provides a constructor used to instantiate objects with intial attributes. the class also overides the `equal` method to provide the more applicable application of comparing the id, name and description. Another interesting method is the `toString` method which was also overriden to output a description of the object as a string instead of the class name and a hexidecimal representation of the hash code of the object.
 `@Entity` is used by JPA to denote the class for storage in a relational table. `@Id` and `@GeneratedValue` are JPA annotations to note the primary key which is generated automatically as needed.
 
-src/main/java/com/sarah/payroll/EmployeeRepository.java
+`src/main/java/com/sarah/payroll/EmployeeRepository.java`
 This is the code repository. It uses the employee object type and its primary key. By extending PagingAndSortingRepository interface it comes with pre- defined methods.
 
 Spring Data is able to write JPA queries for you. This cuts down dev time and reduces bugs and errors. Spring does this by looking at names of methods in repository class and determines which operations you need including all the basic CRUD actions.
 
 FIX ME --------------------
 
-src/main/java/com/greglturnquist/payroll/DatabaseLoader.java
+`src/main/java/com/greglturnquist/payroll/DatabaseLoader.java`
 This file loads the database with a single employee, Frodo Baggins. Using `@Component` is Spring's annotation so it is picked up by the Spring Application Context.
 
 Beans are instances of objects identified and managed by the application context. Spring mainly identifies these beans and dependency management.
 
 The DatabaseLoader class also implements the CommandLineRunner which is so that it is run after all the beans are created and regesterd.
 
-/src/main/java/com/sarah/payroll/PayrollApplication.java
+`/src/main/java/com/sarah/payroll/PayrollApplication.java`
 The project needs an entry point, a main function where the program starts executing code. This is the `public static void main` method, and we defined it in this file. Besides using `./mvnw spring-boot:run` to execute the program you could also run the `main()` method from this file.
 
 ### Front End
