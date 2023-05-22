@@ -106,8 +106,9 @@ curl localhost:8080/api/employees/1
 curl -X POST localhost:8080/api/employees -d "{\"firstName\": \"Bilbo\", \"lastName\": \"Baggins\", \"description\": \"burglar\"}" -H "Content-Type:application/json"
 ```
 
-
 ### Front End
+The focus of this project was the Backend implementation with Java. 
+Currently there are some bugs with pagination due to where the code goes after creating or updating a record. I am currently working on fixing this issue.
 
 ## Dependancies
 

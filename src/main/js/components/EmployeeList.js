@@ -12,19 +12,20 @@ function EmployeeList() {
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [links, setLinks] = useState({});
-  const [records, setRecords] = useState(0);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(2);
   const attributes = ['firstName', 'lastName', 'description']
 
   useEffect(() => {
     const [queryPage, querySize] = getParams();
-    fetchState(queryPage, querySize);
-  }, [page, size]);
+    setPage(queryPage);
+    setSize(querySize);
+  }, [location.search]);
+  
 
   useEffect(() => {
     fetchState(page, size);
-  }, []);
+  }, [page, size]);
 
   const fetchState = async (page, size) => {
     try {
@@ -35,6 +36,15 @@ function EmployeeList() {
     } catch (error) {
       console.error('Error updating state:', error);
     }
+  };
+
+  const getParams = () => {
+    const queryParameters = new URLSearchParams(location.search);
+    let queryPage = queryParameters.get("page");
+    let querySize = queryParameters.get("size");
+    if (!queryPage) queryPage = page;
+    if (!querySize) querySize = size;
+    return [queryPage, querySize];
   };
 
   function modifyBackendUrls(links) {
@@ -52,24 +62,16 @@ function EmployeeList() {
   
     return modifiedLinks;
   }
-
-  function deterimeLastPage () {
-    let fraction = records / size;
-    console.log({fraction})
-    return Math.ceil(records / size);
-  }
   
   async function handleCreate(employeeData) {
     try {
       await employeeService.createEmployee(employeeData);
-      let lastPage = deterimeLastPage();
-      await fetchState(lastPage, size);
       closeModal();
-      setRecords(records + 1)
       alert(`Employee [${employeeData.firstName} | ${employeeData.lastName} | ${employeeData.description}] created successfully`);
-      // go to last page
     } catch (error) {
       console.error('Error creating employee:', error);
+    } finally {
+      await fetchState(page, size);
     }
   }
 
@@ -84,8 +86,7 @@ function EmployeeList() {
       } else {
         console.error('Error updating employee:', error);
       }
-    }
-    finally {
+    } finally {
       await fetchState(page, size);
     }
   }
@@ -93,11 +94,11 @@ function EmployeeList() {
   const handleDelete = async(selfLink) => {
     try {
       await employeeService.deleteEmployee(selfLink);
-      await fetchState(page, size);
-      setRecords(records - 1)
       alert(`Employee deleted successfully`);
     } catch (error) {
       console.error('Error deleting employee:', error);
+    } finally {
+      await fetchState(page, size);
     }
   }
 
@@ -126,22 +127,10 @@ function EmployeeList() {
     setIsModalOpen(false);
   };
 
-  const getParams = () => {
-    const queryParameters = new URLSearchParams(location.search);
-    let queryPage = queryParameters.get("page");
-    let querySize = queryParameters.get("size");
-    if (!queryPage) queryPage = page;
-    if (!querySize) querySize = size;
-    return [queryPage, querySize];
-  }
-
   return (
     <div>
       <div className='container'>
         <button onClick={openModal}>Create</button>
-        <div>
-          <p>{records} Total Records</p>
-        </div>
         <div style={{ paddingTop: '10px' }}>
           <select id="size-select" value={size} onChange={handleSizeChange}>
             <option value={2}>2</option>
